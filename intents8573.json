@@ -69,12 +69,26 @@
                             "name": "symptoms",
                             "type": "symptomType",
                             "samples": [
+                                "{symptoms}",
                                 "I have {symptoms}"
                             ]
                         }
                     ],
                     "samples": [
+                        "{symptoms}",
                         "I have {symptoms}"
+                    ]
+                },
+                {
+                    "name": "brusqueIntent",
+                    "slots": [
+                        {
+                            "name": "brusque",
+                            "type": "brusqueType"
+                        }
+                    ],
+                    "samples": [
+                        "{brusque}"
                     ]
                 }
             ],
@@ -116,8 +130,7 @@
                             "name": {
                                 "value": "no symptoms",
                                 "synonyms": [
-                                    "zero symptoms",
-                                    "none"
+                                    "zero symptoms"
                                 ]
                             }
                         },
@@ -146,6 +159,59 @@
                                 "value": "fever",
                                 "synonyms": [
                                     "a fever"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "brusqueType",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "bad",
+                                "synonyms": [
+                                    "horribly",
+                                    "horrible",
+                                    "awfully",
+                                    "terribly",
+                                    "terrible",
+                                    "awful",
+                                    "badly"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "good",
+                                "synonyms": [
+                                    "excellent",
+                                    "fantastic",
+                                    "great",
+                                    "well"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "no",
+                                "synonyms": [
+                                    "not really",
+                                    "none",
+                                    "nope"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "yes",
+                                "synonyms": [
+                                    "kind of",
+                                    "sort of",
+                                    "a little",
+                                    "some",
+                                    "yeah",
+                                    "yep"
                                 ]
                             }
                         }
@@ -200,6 +266,20 @@
                             "prompts": {
                                 "elicitation": "Elicit.Slot.987524269915.79052327456"
                             }
+                        }
+                    ]
+                },
+                {
+                    "name": "brusqueIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "brusque",
+                            "type": "brusqueType",
+                            "confirmationRequired": false,
+                            "elicitationRequired": false,
+                            "prompts": {}
                         }
                     ]
                 }
