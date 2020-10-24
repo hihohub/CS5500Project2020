@@ -25,7 +25,7 @@ FEELINGS = "None"
 SLEEP = "None"
 SYMPTOMS = "None"
 BRUSQUE = "None"
-DATETIME = datetime.datetime.now().strftime("%b %d %Y %H:%M")
+DATETIME = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 URL = "http://www.jdatatree.com/test/test.php"
 
 turns = ["brusqueIntent","feelingsIntent","sleepIntent","symptomIntent"]
@@ -106,8 +106,10 @@ class symptomIntentHandler(AbstractRequestHandler):
         slots = handler_input.request_envelope.request.intent.slots
         SYMPTOMS = slots["symptoms"].value
         PARAMS = {"feelings":FEELINGS,"sleep":SLEEP,"symptoms":SYMPTOMS,"time":DATETIME}
-        r = requests.get(url=URL,params=PARAMS)
-        speak_output = "You have reported that you feel {0}, you slept {1}, and you have {2}. Thank you for participating.".format(FEELINGS,SLEEP,SYMPTOMS)
+        #r = requests.get(url=URL,params=PARAMS)
+        r = requests.post(url=URL,data=json.dumps(PARAMS),headers={'Content-Type':'application/json'})
+        speak_output = "Thank you for participating. Status code %d" % (r.status_code)
+        #speak_output = "You have reported that you feel {0}, you slept {1}, and you have {2}. Thank you for participating.".format(FEELINGS,SLEEP,SYMPTOMS)
         return (
             handler_input.response_builder
                 .speak(speak_output)
@@ -155,8 +157,10 @@ class brusqueIntentHandler(AbstractRequestHandler):
             TURN = -1
             SYMPTOMS = BRUSQUE
             PARAMS = {"feelings":FEELINGS,"sleep":SLEEP,"symptoms":SYMPTOMS,"time":DATETIME}
-            r = requests.get(url=URL,params=PARAMS)
-            speak_output = "You have reported that you feel {0}, you slept {1}, and you have {2}. Thank you for participating.".format(FEELINGS,SLEEP,SYMPTOMS)
+            #r = requests.get(url=URL,params=PARAMS)
+            r = requests.post(url=URL,data=json.dumps(PARAMS),headers={'Content-Type':'application/json'})
+            speak_output = "Thank you for participating. Status code %d" % (r.status_code)
+            #speak_output = "You have reported that you feel {0}, you slept {1}, and you have {2}. Thank you for participating.".format(FEELINGS,SLEEP,SYMPTOMS)
             return (
                 handler_input.response_builder
                     .speak(speak_output)
