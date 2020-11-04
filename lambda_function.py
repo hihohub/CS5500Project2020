@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# by D. James Smith
+# by James Smith
 
 import requests
 import boto3
