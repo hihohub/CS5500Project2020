@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# This sample demonstrates handling intents from an Alexa skill using the Alexa Skills Kit SDK for Python.
-# Please visit https://alexa.design/cookbook for additional examples on implementing slots, dialog management,
-# session persistence, api calls, and more.
-# This sample is built using the handler classes approach in skill builder.
+# by D. James Smith
+
 import requests
 import boto3
 import json
@@ -25,8 +23,8 @@ FEELINGS = "None"
 SLEEP = "None"
 SYMPTOMS = "None"
 BRUSQUE = "None"
-DATETIME = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-URL = "http://www.jdatatree.com/test/test.php"
+DATETIME = datetime.datetime.now().strftime("%b %d %Y %H:%M")
+URL = "https://cs5500-healthcare.herokuapp.com/v1/alexa"
 
 turns = ["brusqueIntent","feelingsIntent","sleepIntent","symptomIntent"]
 TURN = -1
@@ -105,7 +103,10 @@ class symptomIntentHandler(AbstractRequestHandler):
         TURN = -1
         slots = handler_input.request_envelope.request.intent.slots
         SYMPTOMS = slots["symptoms"].value
-        PARAMS = {"feelings":FEELINGS,"sleep":SLEEP,"symptoms":SYMPTOMS,"time":DATETIME}
+        # get device id
+        sys_object = handler_input.request_envelope.context.system
+        device = sys_object.device.device_id
+        PARAMS = {"feelings":FEELINGS,"sleep":SLEEP,"symptoms":SYMPTOMS,"time":DATETIME,"device":device}
         #r = requests.get(url=URL,params=PARAMS)
         r = requests.post(url=URL,data=json.dumps(PARAMS),headers={'Content-Type':'application/json'})
         speak_output = "Thank you for participating. Status code %d" % (r.status_code)
@@ -156,7 +157,10 @@ class brusqueIntentHandler(AbstractRequestHandler):
         elif TURN==3:
             TURN = -1
             SYMPTOMS = BRUSQUE
-            PARAMS = {"feelings":FEELINGS,"sleep":SLEEP,"symptoms":SYMPTOMS,"time":DATETIME}
+            # get device id
+            sys_object = handler_input.request_envelope.context.system
+            device = sys_object.device.device_id
+            PARAMS = {"feelings":FEELINGS,"sleep":SLEEP,"symptoms":SYMPTOMS,"time":DATETIME,"device":device}
             #r = requests.get(url=URL,params=PARAMS)
             r = requests.post(url=URL,data=json.dumps(PARAMS),headers={'Content-Type':'application/json'})
             speak_output = "Thank you for participating. Status code %d" % (r.status_code)
