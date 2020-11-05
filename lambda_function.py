@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# by James Smith
+# by D. James Smith
 
 import requests
 import boto3
@@ -21,12 +21,13 @@ logger.setLevel(logging.INFO)
 
 FEELINGS = "None"
 SLEEP = "None"
+HOURS = ""
 SYMPTOMS = "None"
 BRUSQUE = "None"
 DATETIME = datetime.datetime.now().strftime("%b %d %Y %H:%M")
 URL = "https://cs5500-healthcare.herokuapp.com/v1/alexa"
 
-turns = ["brusqueIntent","feelingsIntent","sleepIntent","symptomIntent"]
+turns = ["brusqueIntent","feelingsIntent","sleepIntent","hoursSleptIntent","symptomIntent"]
 TURN = -1
 
 class LaunchRequestHandler(AbstractRequestHandler):
@@ -59,7 +60,7 @@ class feelingsIntentHandler(AbstractRequestHandler):
         TURN = turns.index("sleepIntent") # 2
         slots = handler_input.request_envelope.request.intent.slots
         FEELINGS = slots["feelings"].value
-        speak_output = "How did you sleep?"
+        speak_output = "How many hours did you sleep?"
         return (
             handler_input.response_builder
                 .speak(speak_output)
@@ -76,9 +77,29 @@ class sleepIntentHandler(AbstractRequestHandler):
         # type: (HandlerInput) -> Response
         global SLEEP
         global TURN
-        TURN = turns.index("symptomIntent") # 3
+        TURN = turns.index("hoursSleptIntent") # 3
         slots = handler_input.request_envelope.request.intent.slots
         SLEEP = slots["sleep"].value
+        speak_output = "How many hours did you sleep?"
+        return (
+            handler_input.response_builder
+                .speak(speak_output)
+                # .ask("add a reprompt if you want to keep the session open for the user to respond")
+                .response
+        )
+
+class hoursSleptIntentHandler(AbstractRequestHandler):
+    def can_handle(self, handler_input):
+        # type: (HandlerInput) -> bool
+        return ask_utils.is_intent_name("hoursSleptIntent")(handler_input)
+
+    def handle(self, handler_input):
+        # type: (HandlerInput) -> Response
+        global HOURS
+        global TURN
+        TURN = turns.index("symptomIntent") # 4
+        slots = handler_input.request_envelope.request.intent.slots
+        HOURS = slots["amount"].value
         speak_output = "What symptoms do you have?"
         return (
             handler_input.response_builder
@@ -96,6 +117,7 @@ class symptomIntentHandler(AbstractRequestHandler):
         # type: (HandlerInput) -> Response
         global FEELINGS
         global SLEEP
+        global HOURS
         global SYMPTOMS
         global DATETIME
         global URL
@@ -106,7 +128,7 @@ class symptomIntentHandler(AbstractRequestHandler):
         # get device id
         sys_object = handler_input.request_envelope.context.system
         device = sys_object.device.device_id
-        PARAMS = {"feelings":FEELINGS,"sleep":SLEEP,"symptoms":SYMPTOMS,"time":DATETIME,"device":device}
+        PARAMS = {"feelings":FEELINGS,"hours":HOURS,"symptoms":SYMPTOMS,"time":DATETIME,"device":device}
         #r = requests.get(url=URL,params=PARAMS)
         r = requests.post(url=URL,data=json.dumps(PARAMS),headers={'Content-Type':'application/json'})
         speak_output = "Thank you for participating. Status code %d" % (r.status_code)
@@ -127,6 +149,7 @@ class brusqueIntentHandler(AbstractRequestHandler):
         # type: (HandlerInput) -> Response
         global FEELINGS
         global SLEEP
+        global HOURS
         global SYMPTOMS
         global DATETIME
         global URL
@@ -137,7 +160,7 @@ class brusqueIntentHandler(AbstractRequestHandler):
         if TURN==1:
             TURN = 2
             FEELINGS = BRUSQUE
-            speak_output = "How did you sleep?"
+            speak_output = "How many hours did you sleep?"
             return (
                 handler_input.response_builder
                     .speak(speak_output)
@@ -147,7 +170,7 @@ class brusqueIntentHandler(AbstractRequestHandler):
         elif TURN==2:
             TURN = 3
             SLEEP = BRUSQUE
-            speak_output = "What symptoms do you have?"
+            speak_output = "How many hours did you sleep?"
             return (
                 handler_input.response_builder
                     .speak(speak_output)
@@ -155,12 +178,22 @@ class brusqueIntentHandler(AbstractRequestHandler):
                     .response
             )
         elif TURN==3:
+            TURN = 4
+            HOURS = BRUSQUE
+            speak_output = "What symptoms do you have?"
+            return (
+                handler_input.response_builder
+                    .speak(speak_output)
+                    # .ask("add a reprompt if you want to keep the session open for the user to respond")
+                    .response
+        )
+        elif TURN==4:
             TURN = -1
             SYMPTOMS = BRUSQUE
             # get device id
             sys_object = handler_input.request_envelope.context.system
             device = sys_object.device.device_id
-            PARAMS = {"feelings":FEELINGS,"sleep":SLEEP,"symptoms":SYMPTOMS,"time":DATETIME,"device":device}
+            PARAMS = {"feelings":FEELINGS,"hours":HOURS,"symptoms":SYMPTOMS,"time":DATETIME,"device":device}
             #r = requests.get(url=URL,params=PARAMS)
             r = requests.post(url=URL,data=json.dumps(PARAMS),headers={'Content-Type':'application/json'})
             speak_output = "Thank you for participating. Status code %d" % (r.status_code)
@@ -302,6 +335,7 @@ sb = SkillBuilder()
 sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(feelingsIntentHandler())
 sb.add_request_handler(sleepIntentHandler())
+sb.add_request_handler(hoursSleptIntentHandler())
 sb.add_request_handler(symptomIntentHandler())
 sb.add_request_handler(brusqueIntentHandler())
 sb.add_request_handler(HelloWorldIntentHandler())
