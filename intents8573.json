@@ -1,7 +1,7 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "intents eight five seven three",
+            "invocationName": "prototype seven one eight three two",
             "intents": [
                 {
                     "name": "AMAZON.CancelIntent",
@@ -89,6 +89,36 @@
                     ],
                     "samples": [
                         "{brusque}"
+                    ]
+                },
+                {
+                    "name": "hoursSleptIntent",
+                    "slots": [
+                        {
+                            "name": "amount",
+                            "type": "AMAZON.NUMBER",
+                            "samples": [
+                                "I slept {amount} hours",
+                                "{amount} hours",
+                                "{amount}"
+                            ]
+                        }
+                    ],
+                    "samples": [
+                        "I slept maybe {amount} hours",
+                        "only {amount} hours",
+                        "I only slept {amount} hours",
+                        "I slept about {amount} hours",
+                        "I slept around {amount} hours",
+                        "around {amount}",
+                        "about {amount}",
+                        "maybe {amount}",
+                        "about {amount} hours",
+                        "around {amount} hours",
+                        "maybe {amount} hours",
+                        "{amount}",
+                        "{amount} hours",
+                        "I slept {amount} hours"
                     ]
                 }
             ],
@@ -282,6 +312,22 @@
                             "prompts": {}
                         }
                     ]
+                },
+                {
+                    "name": "hoursSleptIntent",
+                    "confirmationRequired": false,
+                    "prompts": {},
+                    "slots": [
+                        {
+                            "name": "amount",
+                            "type": "AMAZON.NUMBER",
+                            "confirmationRequired": false,
+                            "elicitationRequired": true,
+                            "prompts": {
+                                "elicitation": "Elicit.Slot.1357429664156.558727494633"
+                            }
+                        }
+                    ]
                 }
             ],
             "delegationStrategy": "ALWAYS"
@@ -329,6 +375,15 @@
                     {
                         "type": "PlainText",
                         "value": "What symptoms do you have?"
+                    }
+                ]
+            },
+            {
+                "id": "Elicit.Slot.1357429664156.558727494633",
+                "variations": [
+                    {
+                        "type": "PlainText",
+                        "value": "How many hours did you sleep?"
                     }
                 ]
             }
