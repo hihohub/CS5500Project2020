@@ -20,8 +20,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 TURN = 0
-QUESTIONS = ["How are you feeling?","How many hours did you sleep?","What symptoms do you have?","Thank you for participating."]
-RESPONSES = ["","","",""]
+QUESTIONS = ["How are you feeling? Your options are good or bad.","How many hours did you sleep? Please respond with a number.","How many hours did you walk, swim, or exercise? Please respond with a number.","What symptoms do you have? Your options are cold, fever, upset stomach, or no symptoms.","Thank you for participating."]
+RESPONSES = ["","","","",""]
 URL = "https://cs5500-healthcare.herokuapp.com/v1/alexa"
 DATETIME = datetime.datetime.now().strftime("%b %d %Y %H:%M")
 
@@ -34,15 +34,15 @@ def getSpeakOutput(handler_input, response):
     speakOutput = QUESTIONS[TURN]
     if TURN > 0:
         RESPONSES[TURN-1] = response
-    if TURN == 3:
+    if TURN == 4:
         # get device id
         sys_object = handler_input.request_envelope.context.system
         device = sys_object.device.device_id
-        PARAMS = {"feelings":RESPONSES[0],"hours":RESPONSES[1],"symptoms":RESPONSES[2],"time":DATETIME,"device":device}
+        PARAMS = {"feelings":RESPONSES[0],"hours":RESPONSES[1],"activity":RESPONSES[2],"symptoms":RESPONSES[3],"time":DATETIME,"device":device}
         #r = requests.get(url=URL,params=PARAMS)
         r = requests.post(url=URL,data=json.dumps(PARAMS),headers={'Content-Type':'application/json'})
         #speakOutput = "Thank you for participating. Status code %d" % (r.status_code)
-        speakOutput = "You have reported that you feel {0}, you slept {1} hours, and you have {2}. Thank you for participating.".format(RESPONSES[0],RESPONSES[1],RESPONSES[2])
+        speakOutput = "You have reported that you feel {0}, you slept {1} hours, you exercised {2} hours, and you have {3}. Thank you for participating.".format(RESPONSES[0],RESPONSES[1],RESPONSES[2],RESPONSES[3])
     TURN += 1
     return speakOutput
 
