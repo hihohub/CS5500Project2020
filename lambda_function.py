@@ -109,40 +109,6 @@ class symptomIntentHandler(AbstractRequestHandler):
                 .response
         )
 
-class brusqueIntentHandler(AbstractRequestHandler):
-    def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
-        return ask_utils.is_intent_name("brusqueIntent")(handler_input)
-
-    def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
-        slots = handler_input.request_envelope.request.intent.slots
-        speak_output = getSpeakOutput(handler_input, slots["brusque"].value)
-        return (
-            handler_input.response_builder
-                .speak(speak_output)
-                # .ask("add a reprompt if you want to keep the session open for the user to respond")
-                .response
-        )
-
-class HelloWorldIntentHandler(AbstractRequestHandler):
-    """Handler for Hello World Intent."""
-    def can_handle(self, handler_input):
-        # type: (HandlerInput) -> bool
-        return ask_utils.is_intent_name("HelloWorldIntent")(handler_input)
-
-    def handle(self, handler_input):
-        # type: (HandlerInput) -> Response
-        speak_output = "Hello World!"
-
-        return (
-            handler_input.response_builder
-                .speak(speak_output)
-                # .ask("add a reprompt if you want to keep the session open for the user to respond")
-                .response
-        )
-
-
 class HelpIntentHandler(AbstractRequestHandler):
     """Handler for Help Intent."""
     def can_handle(self, handler_input):
@@ -248,8 +214,6 @@ sb.add_request_handler(LaunchRequestHandler())
 sb.add_request_handler(feelingsIntentHandler())
 sb.add_request_handler(hoursSleptIntentHandler())
 sb.add_request_handler(symptomIntentHandler())
-sb.add_request_handler(brusqueIntentHandler())
-sb.add_request_handler(HelloWorldIntentHandler())
 sb.add_request_handler(HelpIntentHandler())
 sb.add_request_handler(CancelOrStopIntentHandler())
 sb.add_request_handler(SessionEndedRequestHandler())
