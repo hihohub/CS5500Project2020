@@ -41,7 +41,7 @@ def getSpeakOutput(handler_input, response):
     speakOutput = QUESTIONS[TURN]
     if TURN > 0:
         RESPONSES[TURN-1] = response
-    if TURN == 4:
+    if TURN == len(QUESTIONS) - 1:
         # get device id
         sys_object = handler_input.request_envelope.context.system
         device = sys_object.device.device_id
